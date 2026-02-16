@@ -315,24 +315,25 @@ private:
     m_lostMessages->runForUser("TestUser");
     CBL_ASSERT_EQ(m_wiki->readPage("Discussion utilisateur:TestMentor", mwc::RP_USER).user, "TestMentor");
   }
-  CBL_TEST_CASE(QuestionAfterSalebotDeletion) {
+  CBL_TEST_CASE(QuestionAfterFramabotDeletion) {
     postMessage("Bienvenue sur Wikipédia, TestUser. [[Utilisateur:TestMentor|TestMentor]]", "Loveless");
     postMessage(
-        "== Annonce de suppression de page ==\n"
-        "[[Utilisateur:Salebot|Salebot]]",
-        "Salebot");
+        "== Suppression de la page X ==\n"
+        "[[Utilisateur:Framabot|Framabot]]",
+        "Framabot");
     postMessage(":Quoi ? (llmcat=WikiQuestion) [[Utilisateur:TestUser|TestUser]]", "TestUser");
     m_lostMessages->runForUser("TestUser");
     CBL_ASSERT_EQ(m_wiki->readPageContent("Discussion utilisateur:TestUser"), cbl::unindent(R"(
         Bienvenue sur Wikipédia, TestUser. [[Utilisateur:TestMentor|TestMentor]]
-        == Annonce de suppression de page ==
-        [[Utilisateur:Salebot|Salebot]]
+        == Suppression de la page X ==
+        [[Utilisateur:Framabot|Framabot]]
         :Quoi ? (llmcat=WikiQuestion) [[Utilisateur:TestUser|TestUser]]
         ::Bonjour TestUser,
         ::Je suis un robot de Wikipédia. J'ai remarqué que vous avez répondu à un message envoyé par un autre robot. Nous les robots ne pouvons pas comprendre les messages qui nous sont écrits ! '''Aucun humain ne sera prévenu de votre message''' si vous ne le postez pas à l'endroit approprié.
         ::Si vous voulez contester la suppression de la page, faites une demande sur [[Wikipédia:Demande de restauration de page]]. Pour les questions plus générales, vous pouvez vous adresser au [[Wikipédia:Forum des nouveaux|forum des nouveaux]] ou à [[Discussion utilisateur:TestMentor|TestMentor]], qui vous a été {{subst:gender:TestMentor|assigné|assignée}} comme mentor.
         ::~~~~)"));
   }
+  /*
   CBL_TEST_CASE(QuestionAfterSalebotRevert) {
     postMessage(
         "== Salebot a annulé votre modification sur X ==\n"
@@ -349,16 +350,17 @@ private:
         ::Vous pouvez par exemple vous adresser au [[Wikipédia:Forum des nouveaux|forum des nouveaux]].
         ::~~~~)"));
   }
-  CBL_TEST_CASE(QuestionAfterSalebotRevertForRecreatedPage) {
+  */
+  CBL_TEST_CASE(QuestionAfterFramabotRevertForRecreatedPage) {
     postMessage(
-        "== Salebot a annulé votre modification sur X ==\n"
-        "Ne recréez pas cette page vous-même. [[Utilisateur:Salebot|Salebot]]",
-        "Salebot");
+        "== Recréation de la page X ==\n"
+        "Ne recréez pas cette page vous-même. [[Utilisateur:Framabot|Framabot]]",
+        "Framabot");
     postMessage(":Quoi ? (llmcat=WikiQuestion) [[Utilisateur:TestUser|TestUser]]", "TestUser");
     m_lostMessages->runForUser("TestUser");
     CBL_ASSERT_EQ(m_wiki->readPageContent("Discussion utilisateur:TestUser"), cbl::unindent(R"(
-        == Salebot a annulé votre modification sur X ==
-        Ne recréez pas cette page vous-même. [[Utilisateur:Salebot|Salebot]]
+        == Recréation de la page X ==
+        Ne recréez pas cette page vous-même. [[Utilisateur:Framabot|Framabot]]
         :Quoi ? (llmcat=WikiQuestion) [[Utilisateur:TestUser|TestUser]]
         ::Bonjour TestUser,
         ::Je suis un robot de Wikipédia. J'ai remarqué que vous avez répondu à un message envoyé par un autre robot. Nous les robots ne pouvons pas comprendre les messages qui nous sont écrits ! '''Aucun humain ne sera prévenu de votre message''' si vous ne le postez pas à l'endroit approprié.
@@ -518,14 +520,14 @@ private:
   CBL_TEST_CASE(QuestionNotAtEndOfPage) {
     postMessage("Message. [[Utilisateur:NaggoBot|NaggoBot]]", "NaggoBot");
     postMessage(
-        "== Annonce de suppression de page ==\n"
-        "[[Utilisateur:Salebot|Salebot]]\n",
-        "Salebot");
+        "== Suppression de la page X ==\n"
+        "[[Utilisateur:Framabot|Framabot]]\n",
+        "Framabot");
     m_wiki->setPageContent("Discussion utilisateur:TestUser",
                            "Message. [[Utilisateur:NaggoBot|NaggoBot]]\n"
                            ":Quoi ? (llmcat=WikiQuestion) [[Utilisateur:TestUser|TestUser]]\n"
-                           "== Annonce de suppression de page ==\n"
-                           "[[Utilisateur:Salebot|Salebot]]\n",
+                           "== Suppression de la page X ==\n"
+                           "[[Utilisateur:Framabot|Framabot]]\n",
                            "TestUser");
     m_lostMessages->runForUser("TestUser");
     CBL_ASSERT_EQ(m_wiki->readPageContent("Discussion utilisateur:TestUser"), cbl::unindent(R"(
@@ -536,20 +538,20 @@ private:
       ::Vous pouvez par exemple vous adresser au [[Wikipédia:Forum des nouveaux|forum des nouveaux]].
       ::~~~~
 
-      == Annonce de suppression de page ==
-      [[Utilisateur:Salebot|Salebot]])"));
+      == Suppression de la page X ==
+      [[Utilisateur:Framabot|Framabot]])"));
   }
   CBL_TEST_CASE(QuestionNotAtEndOfPage2) {
     postMessage("Message. [[Utilisateur:NaggoBot|NaggoBot]]", "NaggoBot");
     postMessage(
-        "\n== Annonce de suppression de page ==\n"
-        "[[Utilisateur:Salebot|Salebot]]\n",
-        "Salebot");
+        "\n== Suppression de la page X ==\n"
+        "[[Utilisateur:Framabot|Framabot]]\n",
+        "Framabot");
     m_wiki->setPageContent("Discussion utilisateur:TestUser",
                            "Message. [[Utilisateur:NaggoBot|NaggoBot]]\n\n"
                            ":Quoi ? (llmcat=WikiQuestion) [[Utilisateur:TestUser|TestUser]]\n"
-                           "== Annonce de suppression de page ==\n"
-                           "[[Utilisateur:Salebot|Salebot]]\n",
+                           "== Suppression de la page X ==\n"
+                           "[[Utilisateur:Framabot|Framabot]]\n",
                            "TestUser");
     m_lostMessages->runForUser("TestUser");
     CBL_ASSERT_EQ(m_wiki->readPageContent("Discussion utilisateur:TestUser"), cbl::unindent(R"(
@@ -561,14 +563,14 @@ private:
       ::Vous pouvez par exemple vous adresser au [[Wikipédia:Forum des nouveaux|forum des nouveaux]].
       ::~~~~
 
-      == Annonce de suppression de page ==
-      [[Utilisateur:Salebot|Salebot]])"));
+      == Suppression de la page X ==
+      [[Utilisateur:Framabot|Framabot]])"));
   }
   CBL_TEST_CASE(MultipleBots) {
     m_wiki->setPageContent("Discussion utilisateur:TestUser", "Bienvenue. [[Utilisateur:TestMentor|TestMentor]]",
                            "Loveless");
     m_wiki->setPageContent("Discussion utilisateur:TestUser", "Bienvenue ! [[Utilisateur:TestMentor|TestMentor]]",
-                           "Salebot");
+                           "Framabot");
     m_wiki->setPageContent(
         "Discussion utilisateur:TestUser",
         "Bienvenue ! [[Utilisateur:TestMentor|TestMentor]]\n:Salut ! (llmcat=Other) [[Utilisateur:TestUser|TestUser]]",

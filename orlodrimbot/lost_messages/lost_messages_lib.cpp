@@ -193,8 +193,8 @@ string composeMessage(const Post& post, const PostAnalysis& postAnalysis) {
         "Je vous conseille de contacter le contributeur indiqué dans mon message précédent (cliquez sur son nom) "
         "ou le [[Wikipédia:Forum des nouveaux|forum des nouveaux]].\n";
   } else if (post.hasNonWelcomeBotMessage) {
-    if (postAnalysis.sectionType == SectionType::SALEBOT_DELETION_MESSAGE ||
-        postAnalysis.sectionType == SectionType::SALEBOT_POST_DELETION_MESSAGE ||
+    if (postAnalysis.sectionType == SectionType::FRAMABOT_DELETION_MESSAGE ||
+        postAnalysis.sectionType == SectionType::FRAMABOT_POST_DELETION_MESSAGE ||
         postAnalysis.sectionType == SectionType::SALEBOT_REVERT_MESSAGE ||
         postAnalysis.sectionType == SectionType::NAGGOBOT_UNDELETE_REQUEST_MESSAGE) {
       message += "J'ai remarqué que vous avez répondu à un message envoyé par un autre robot. ";
@@ -206,13 +206,13 @@ string composeMessage(const Post& post, const PostAnalysis& postAnalysis) {
     message +=
         "Nous les robots ne pouvons pas comprendre les messages qui nous sont écrits ! '''Aucun humain ne sera prévenu "
         "de votre message''' si vous ne le postez pas à l'endroit approprié.\n";
-    if (postAnalysis.sectionType == SectionType::SALEBOT_DELETION_MESSAGE) {
+    if (postAnalysis.sectionType == SectionType::FRAMABOT_DELETION_MESSAGE) {
       cbl::append(message,
                   "Si vous voulez contester la suppression de la page, faites une demande sur "
                   "[[Wikipédia:Demande de restauration de page]]. Pour les questions plus générales, vous pouvez vous "
                   "adresser ",
                   contacts, ".\n");
-    } else if (postAnalysis.sectionType == SectionType::SALEBOT_POST_DELETION_MESSAGE) {
+    } else if (postAnalysis.sectionType == SectionType::FRAMABOT_POST_DELETION_MESSAGE) {
       cbl::append(message,
                   "Comme la page a déjà été supprimée une première fois, vous ne pourrez pas intervenir dessus pour "
                   "l'instant. Si vous souhaitez que la version originale soit restaurée ou que la nouvelle soit "
@@ -528,16 +528,13 @@ bool LostMessages::extractPostContent(const Post& post, PostAnalysis& postAnalys
     }
   } else {
     string sectionTitle = wikicode::getTitleContent(sectionHeader);
-    if (section.find("|Salebot]]") != string::npos) {
-      if (sectionTitle == "Annonce de suppression de page") {
-        postAnalysis.sectionType = SectionType::SALEBOT_DELETION_MESSAGE;
-      } else if (sectionTitle.find("Salebot a annulé votre modification") != string::npos) {
-        if (section.find("Ne recréez pas cette page vous-même") != string::npos) {
-          postAnalysis.sectionType = SectionType::SALEBOT_POST_DELETION_MESSAGE;
-        } else {
-          postAnalysis.sectionType = SectionType::SALEBOT_REVERT_MESSAGE;
-        }
+    if (section.find("|Framabot]]") != string::npos) {
+      if (sectionTitle.find("Suppression de la page") != string::npos) {
+        postAnalysis.sectionType = SectionType::FRAMABOT_DELETION_MESSAGE;
+      } else if (sectionTitle.find("Recréation de la page") != string::npos) {
+        postAnalysis.sectionType = SectionType::FRAMABOT_POST_DELETION_MESSAGE;
       }
+      // TODO handle newly created patrolling bot(s) and adapt SectionType::SALEBOT_REVERT_MESSAGE;
     } else if (section.find("|NaggoBot]]") != string::npos &&
                sectionTitle.find("Concernant votre demande de restauration") != string::npos) {
       postAnalysis.sectionType = SectionType::NAGGOBOT_UNDELETE_REQUEST_MESSAGE;

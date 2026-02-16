@@ -68,7 +68,7 @@ const unordered_set<string_view> WELCOME_BOTS = {
 
 const unordered_set<string_view> OTHER_BOTS = {
     "KunMilanoRobot", "Flow talk page manager",    "NaggoBot", "OrlodrimBot",
-    "Salebot",        "Signature manquante (bot)", "ZéroBot",
+    "Salebot",        "Signature manquante (bot)", "ZéroBot", "Framabot",
 };
 
 bool isBot(string_view user) {
